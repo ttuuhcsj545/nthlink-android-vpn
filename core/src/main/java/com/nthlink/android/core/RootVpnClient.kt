@@ -53,7 +53,7 @@ internal class RootVpnClient(context: Context) : RootVpn(context) {
                 
                 val settings = JSONObject().apply {
                     put("address", server.host)
-                    put("port", server.port.toIntOrNull() ?: 443)
+                    put("port", server.port)
                     put("method", server.encryptMethod)
                     put("password", server.password)
                 }
