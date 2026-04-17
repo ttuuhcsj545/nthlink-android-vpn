@@ -1,51 +1,80 @@
 package root
 
-object Root {
-    
+abstract class Root {
+    companion object {
+        const val Version: String = "3.3.7"
+
+        init {
+            Seq.touch()
+            _init()
+        }
+
+        @JvmStatic
+        external fun init(apiKey: String, debug: Boolean)
+
+        @JvmStatic
+        external fun getConfig(
+            url: String,
+            params: ConfigParams,
+            doRequestListener: DoRequestListener,
+            verifyResponseListener: VerifyResponseListener
+        ): String
+
+        @JvmStatic
+        external fun getConfigWithJson(
+            url: String,
+            jsonParams: String,
+            doRequestListener: DoRequestListener,
+            verifyResponseListener: VerifyResponseListener
+        ): String
+
+        @JvmStatic
+        external fun encrypt(data: String): String
+
+        @JvmStatic
+        external fun decrypt(data: String): String
+
+        @JvmStatic
+        external fun feedback(apiKey: String, params: FeedbackParams): String
+
+        @JvmStatic
+        external fun feedbackWithJson(apiKey: String, jsonParams: String): String
+
+        @JvmStatic
+        external fun report(apiKey: String, params: ReportParams): String
+
+        @JvmStatic
+        external fun reportWithJson(apiKey: String, jsonParams: String): String
+
+        @JvmStatic
+        external fun startDiagnostics(
+            apiKey: String,
+            params: ConfigParams,
+            proxyHost: String,
+            proxyPort: String,
+            proxyPassword: String,
+            vpn: VPN
+        ): String
+
+        @JvmStatic
+        fun touch() {
+            // No-op, just to trigger class initialization
+        }
+
+        private external fun _init()
+    }
+}
+
+// go/Seq class needed by Root
+object Seq {
     init {
         System.loadLibrary("gojni")
     }
-    
+
     @JvmStatic
-    external fun init(apiKey: String, debug: Boolean)
-    
-    @JvmStatic
-    external fun getConfig(
-        url: String,
-        params: ConfigParams,
-        doRequestListener: DoRequestListener,
-        verifyResponseListener: VerifyResponseListener
-    ): String
-    
-    @JvmStatic
-    external fun getConfigWithJson(
-        url: String,
-        jsonParams: String,
-        doRequestListener: DoRequestListener,
-        verifyResponseListener: VerifyResponseListener
-    ): String
-    
-    @JvmStatic
-    external fun encrypt(data: String): String
-    
-    @JvmStatic
-    external fun decrypt(data: String): String
-    
-    @JvmStatic
-    external fun feedback(apiKey: String, params: FeedbackParams): String
-    
-    @JvmStatic
-    external fun report(apiKey: String, params: ReportParams): String
-    
-    @JvmStatic
-    external fun startDiagnostics(
-        apiKey: String,
-        params: ConfigParams,
-        proxyHost: String,
-        proxyPort: String,
-        proxyPassword: String,
-        vpn: VPN
-    ): String
+    fun touch() {
+        // No-op, just to trigger class initialization
+    }
 }
 
 interface DoRequestListener {
