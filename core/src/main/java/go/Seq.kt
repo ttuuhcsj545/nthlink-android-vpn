@@ -27,11 +27,17 @@ class Seq private constructor() {
     interface Proxy : GoObject
 
     /** go/Seq$Ref — tracks a Java object reference with a refnum */
-    class Ref(val refnum: Int, val obj: Any?) {
+    class Ref {
+        @JvmField val refnum: Int
+        @JvmField val obj: Any?
         private var refcnt: Int = 0
 
-        init {
-            require(refnum >= 0) { "Ref instantiated with a Go refnum $refnum" }
+        constructor(refnum: Int, obj: Any?) {
+            if (refnum < 0) {
+                throw RuntimeException("Ref instantiated with a Go refnum $refnum")
+            }
+            this.refnum = refnum
+            this.obj = obj
         }
 
         @Synchronized
@@ -62,7 +68,7 @@ class Seq private constructor() {
     class RefTracker {
         private val javaObjs = RefMap()
         private val javaRefs = IdentityHashMap<Any, Int>()
-        private var next: Int = REF_OFFSET
+        private var next: Int = 42  // REF_OFFSET
 
         @Synchronized
         fun inc(obj: Any?): Int {
@@ -111,10 +117,6 @@ class Seq private constructor() {
         fun incRefnum(refnum: Int) {
             val ref = javaObjs.get(refnum) ?: throw RuntimeException("referenced Java object is not found: refnum=$refnum")
             ref.inc()
-        }
-
-        companion object {
-            private const val REF_OFFSET = 42
         }
     }
 
