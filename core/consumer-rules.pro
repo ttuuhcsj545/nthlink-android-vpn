@@ -18,9 +18,15 @@
 -keep class root.ReportParams { *; }
 -keep class root.DeviceParams { *; }
 
-# Keep go/Seq for gobind JNI runtime
+# Keep go/Seq and all inner classes for gobind JNI runtime
 -keep class go.Seq { *; }
+-keep class go.Seq$* { *; }
 -keepclassmembers class go.Seq { *; }
+-keepclassmembers class go.Seq$* { *; }
+
+# Keep go.Universe
+-keep class go.Universe { *; }
+-keep class go.Universe$* { *; }
 
 # Keep LeafService and LeafJni
 -keep class com.leaf.LeafService { *; }
