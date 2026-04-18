@@ -127,7 +127,7 @@ class LeafService : VpnService() {
 
     /** 被 LeafJni 通过 reflect 调用，保护套接字不走 VPN */
     @Suppress("unused")
-    fun protect(fd: Int): Boolean = protect(fd)
+    override fun protect(fd: Int): Boolean = super.protect(fd)
 
     // ----------------------------------------------------------
     // 前台通知
