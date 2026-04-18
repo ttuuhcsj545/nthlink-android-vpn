@@ -3,6 +3,8 @@ name: Build nthLink Android
 on:
   push:
     branches: [ main, master ]
+    tags:
+      - 'v*'
   pull_request:
     branches: [ main, master ]
   workflow_dispatch:
@@ -10,6 +12,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     steps:
     - name: Checkout code
@@ -30,17 +34,83 @@ jobs:
     - name: Run tests
       run: ./gradlew test
       
-    - name: Build APK
+    - name: Build Debug APK
       run: ./gradlew assembleDebug
       
-    - name: Upload APK
+    - name: Build Release APK
+      run: ./gradlew assembleRelease
+      
+    - name: Upload Debug APK
       uses: actions/upload-artifact@v4
       with:
         name: nthlink-debug-apk
         path: app/build/outputs/apk/debug/*.apk
+        
+    - name: Upload Release APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: nthlink-release-apk
+        path: app/build/outputs/apk/release/*.apk
         
     - name: Upload AAR
       uses: actions/upload-artifact@v4
       with:
         name: nthlink-core-aar
         path: core/build/outputs/aar/*.aar
+        
+    - name: Get version
+      id: get_version
+      run: |
+        VERSION=$(cat app/build.gradle | grep "versionName" | head -1 | sed 's/.*"\(.*\)".*/\1/')
+        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+        echo "VERSION_CODE=$(date +%s)" >> $GITHUB_OUTPUT
+        
+    - name: Create Release
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v1
+      with:
+        name: nthLink Android v${{ steps.get_version.outputs.VERSION }}
+        body: |
+          ## nthLink Android VPN v${{ steps.get_version.outputs.VERSION }}
+          
+          ### 更新内容
+          - 自动构建发布
+          
+          ### 安装包
+          - `app-debug.apk` - 调试版本
+          - `app-release-unsigned.apk` - 发布版本（未签名）
+          
+          ### 构建时间
+          ${{ github.event.head_commit.timestamp }}
+        files: |
+          app/build/outputs/apk/debug/*.apk
+          app/build/outputs/apk/release/*.apk
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Create/Update Latest Release
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      uses: softprops/action-gh-release@v1
+      with:
+        name: nthLink Android Latest (Build ${{ steps.get_version.outputs.VERSION_CODE }})
+        tag_name: latest-build
+        body: |
+          ## nthLink Android VPN - 最新构建
+          
+          ### 构建信息
+          - 分支: ${{ github.ref_name }}
+          - 提交: ${{ github.sha }}
+          - 时间: ${{ github.event.head_commit.timestamp }}
+          
+          ### 安装包
+          - `app-debug.apk` - 调试版本
+          - `app-release-unsigned.apk` - 发布版本（未签名）
+        files: |
+          app/build/outputs/apk/debug/*.apk
+          app/build/outputs/apk/release/*.apk
+        draft: false
+        prerelease: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

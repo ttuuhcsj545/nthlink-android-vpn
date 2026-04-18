@@ -82,7 +82,8 @@ interface VPN {
 // All property accessors are native methods
 // ============================================================
 class ConfigParams : go.Seq.Proxy {
-    private val refnum: Int
+    @JvmField
+    val refnum: Int
 
     // <init>()V — Java-side construction: allocate a new Go object
     constructor() {
@@ -92,6 +93,8 @@ class ConfigParams : go.Seq.Proxy {
     }
 
     // <init>(I)V — native-side construction: wrap existing Go refnum
+    // Must be @JvmOverloads to ensure JNI can find it
+    @JvmOverloads
     constructor(refnum: Int) {
         this.refnum = refnum
         go.Seq.trackGoRef(refnum, this)
@@ -152,7 +155,8 @@ class ConfigParams : go.Seq.Proxy {
 // DeviceParams — gobind Proxy object
 // ============================================================
 class DeviceParams : go.Seq.Proxy {
-    private val refnum: Int
+    @JvmField
+    val refnum: Int
 
     constructor() {
         go.Seq.touch()
@@ -160,6 +164,7 @@ class DeviceParams : go.Seq.Proxy {
         go.Seq.trackGoRef(refnum, this)
     }
 
+    @JvmOverloads
     constructor(refnum: Int) {
         this.refnum = refnum
         go.Seq.trackGoRef(refnum, this)
@@ -205,7 +210,8 @@ class DeviceParams : go.Seq.Proxy {
 // FeedbackParams — gobind Proxy object
 // ============================================================
 class FeedbackParams : go.Seq.Proxy {
-    private val refnum: Int
+    @JvmField
+    val refnum: Int
 
     constructor() {
         go.Seq.touch()
@@ -213,6 +219,7 @@ class FeedbackParams : go.Seq.Proxy {
         go.Seq.trackGoRef(refnum, this)
     }
 
+    @JvmOverloads
     constructor(refnum: Int) {
         this.refnum = refnum
         go.Seq.trackGoRef(refnum, this)
@@ -298,7 +305,8 @@ class FeedbackParams : go.Seq.Proxy {
 // ReportParams — gobind Proxy object
 // ============================================================
 class ReportParams : go.Seq.Proxy {
-    private val refnum: Int
+    @JvmField
+    val refnum: Int
 
     constructor() {
         go.Seq.touch()
@@ -306,6 +314,7 @@ class ReportParams : go.Seq.Proxy {
         go.Seq.trackGoRef(refnum, this)
     }
 
+    @JvmOverloads
     constructor(refnum: Int) {
         this.refnum = refnum
         go.Seq.trackGoRef(refnum, this)
