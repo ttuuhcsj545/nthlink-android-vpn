@@ -16,3 +16,12 @@
 -keep class root.ConfigParams { *; }
 -keep class root.FeedbackParams { *; }
 -keep class root.ReportParams { *; }
+-keep class root.DeviceParams { *; }
+
+# Keep go/Seq for gobind JNI runtime
+-keep class go.Seq { *; }
+-keepclassmembers class go.Seq { *; }
+
+# Keep LeafService and LeafJni
+-keep class com.leaf.LeafService { *; }
+-keep class com.leaf.LeafJni { *; }

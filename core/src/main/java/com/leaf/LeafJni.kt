@@ -3,7 +3,7 @@ package com.leaf
 object LeafJni {
     
     init {
-        System.loadLibrary("leafandroid")
+        System.loadLibrary("leafandroid")   // loads libleafandroid.so
     }
     
     @JvmStatic

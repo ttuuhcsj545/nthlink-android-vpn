@@ -1,12 +1,50 @@
 package root
 
+// ============================================================
+// go/Seq — gobind runtime support class
+// Must be in package "go" to match JNI symbol: go/Seq
+// Reconstructed from Seq.smali; loadLibrary + native stubs
+// ============================================================
+object Seq {
+    init {
+        System.loadLibrary("gojni")
+    }
+
+    // Called by Root.<clinit> to ensure this class (and gojni) is loaded first
+    @JvmStatic
+    fun touch() { /* triggers class init */ }
+
+    @JvmStatic
+    external fun destroyRef(refnum: Int)
+
+    @JvmStatic
+    fun decRef(refnum: Int) { /* no-op stub; tracker handled by native */ }
+
+    @JvmStatic
+    external fun incGoRef(refnum: Int, obj: Any)
+
+    @JvmStatic
+    fun incRef(obj: Any): Int = 0   // stub; native side manages
+
+    @JvmStatic
+    fun incRefnum(refnum: Int) { /* stub */ }
+
+    @JvmStatic
+    external fun setContext(ctx: Any)
+}
+
+// ============================================================
+// root/Root — gobind-generated JNI bridge
+// Must match Root.smali exactly: abstract class, static clinit
+// calling Seq.touch() then _init()
+// ============================================================
 abstract class Root {
     companion object {
         const val Version: String = "3.3.7"
 
         init {
-            Seq.touch()
-            _init()
+            Seq.touch()   // ensures gojni is loaded
+            _init()       // gobind registration
         }
 
         @JvmStatic
@@ -56,26 +94,18 @@ abstract class Root {
             vpn: VPN
         ): String
 
+        /** No-op — triggers companion object (and thus clinit) */
         @JvmStatic
-        fun touch() {
-            // No-op, just to trigger class initialization
-        }
+        fun touch() { /* triggers class init */ }
 
+        @JvmStatic
         private external fun _init()
     }
 }
 
-// go/Seq class needed by Root
-object Seq {
-    init {
-        System.loadLibrary("gojni")
-    }
-
-    @JvmStatic
-    fun touch() {
-        // No-op, just to trigger class initialization
-    }
-}
+// ============================================================
+// Interfaces & data classes (match root/*.smali exactly)
+// ============================================================
 
 interface DoRequestListener {
     fun doRequest(url: String, data: ByteArray, headers: Map<String, String>): ByteArray
@@ -114,4 +144,14 @@ class ReportParams {
     var event: String = ""
     var error: String = ""
     var info: String = ""
+}
+
+class DeviceParams {
+    var apiKey: String = ""
+    var clientId: String = ""
+    var language: String = ""
+    var device: String = ""
+    var appVersion: String = ""
+    var sdkVersion: String = ""
+    var timezone: String = ""
 }

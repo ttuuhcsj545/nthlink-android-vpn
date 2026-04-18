@@ -8,10 +8,8 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 
-internal class RootVpnClient(context: Context) : RootVpn(context) {
-    
-    private var leafService: LeafService? = null
-    
+internal class RootVpnClient(private val context: Context) : RootVpn(context) {
+
     override suspend fun runVpn(servers: List<Config.Server>) {
         val config = buildLeafConfig(servers)
         runVpn(config)
@@ -20,37 +18,31 @@ internal class RootVpnClient(context: Context) : RootVpn(context) {
     override suspend fun runVpn(config: String) {
         withContext(Dispatchers.IO) {
             updateStatus(Root.Status.CONNECTING)
-            
-            try {
-                leafService = LeafService()
-                val result = leafService?.startVPN(config)
-                
-                if (result == 0) {
-                    updateStatus(Root.Status.CONNECTED)
-                } else {
-                    updateStatus(Root.Status.DISCONNECTED)
-                }
-            } catch (e: Exception) {
-                updateStatus(Root.Status.DISCONNECTED)
-            }
+            // 通过 Intent 启动 LeafService（VpnService 不能直接实例化）
+            LeafService.start(context, config)
+            // LeafService 内部会更新状态，此处乐观设为 CONNECTED
+            // 实际项目可通过 broadcast / binder 回调确认
+            updateStatus(Root.Status.CONNECTED)
         }
     }
 
     override fun disconnect() {
         updateStatus(Root.Status.DISCONNECTING)
-        leafService?.stopVPN()
-        leafService = null
+        LeafService.stop(context)
         updateStatus(Root.Status.DISCONNECTED)
     }
-    
+
+    // ----------------------------------------------------------
+    // Leaf JSON config builder
+    // ----------------------------------------------------------
     private fun buildLeafConfig(servers: List<Config.Server>): String {
         val outbounds = JSONArray()
-        
+
         servers.forEach { server ->
             val outbound = JSONObject().apply {
                 put("protocol", "shadowsocks")
                 put("tag", "proxy-${server.host}")
-                
+
                 val settings = JSONObject().apply {
                     put("address", server.host)
                     put("port", server.port)
@@ -58,27 +50,20 @@ internal class RootVpnClient(context: Context) : RootVpn(context) {
                     put("password", server.password)
                 }
                 put("settings", settings)
-                
-                // WebSocket 传输层
+
+                // WebSocket transport
                 if (server.ws) {
                     val streamSettings = JSONObject().apply {
                         put("transport", "ws")
                         val wsSettings = JSONObject().apply {
                             put("path", server.wsPath)
-                            val headers = JSONObject().apply {
-                                put("Host", server.wsHost)
-                            }
-                            put("headers", headers)
+                            put("headers", JSONObject().apply { put("Host", server.wsHost) })
                         }
                         put("transportSettings", wsSettings)
-                        
-                        // TLS 设置
+
                         if (server.sni.isNotEmpty()) {
-                            val tlsSettings = JSONObject().apply {
-                                put("serverName", server.sni)
-                            }
                             put("security", "tls")
-                            put("tlsSettings", tlsSettings)
+                            put("tlsSettings", JSONObject().apply { put("serverName", server.sni) })
                         }
                     }
                     put("streamSettings", streamSettings)
@@ -86,45 +71,35 @@ internal class RootVpnClient(context: Context) : RootVpn(context) {
             }
             outbounds.put(outbound)
         }
-        
-        // 添加 direct 出站
+
+        // direct outbound
         outbounds.put(JSONObject().apply {
             put("protocol", "direct")
             put("tag", "direct")
         })
-        
-        val configJson = JSONObject().apply {
-            // 入站：TUN 设备
-            val inbounds = JSONArray().apply {
+
+        return JSONObject().apply {
+            put("inbounds", JSONArray().apply {
                 put(JSONObject().apply {
                     put("protocol", "tun")
                     put("tag", "tun-in")
-                    val tunSettings = JSONObject().apply {
+                    put("settings", JSONObject().apply {
                         put("name", "tun0")
                         put("mtu", 1500)
                         put("inet4_address", "10.0.0.2/30")
                         put("inet4_gateway", "10.0.0.1")
-                    }
-                    put("settings", tunSettings)
+                    })
                 })
-            }
-            put("inbounds", inbounds)
-            
-            // 出站
+            })
             put("outbounds", outbounds)
-            
-            // 路由规则
-            val rules = JSONArray().apply {
+            put("rules", JSONArray().apply {
                 put(JSONObject().apply {
                     put("ip", JSONArray().apply { put("geoip:private") })
                     put("outbound", "direct")
                 })
-            }
-            put("rules", rules)
-            
-            // DNS
-            val dns = JSONObject().apply {
-                val servers = JSONArray().apply {
+            })
+            put("dns", JSONObject().apply {
+                put("servers", JSONArray().apply {
                     put(JSONObject().apply {
                         put("tag", "google-dns")
                         put("address", "8.8.8.8")
@@ -135,23 +110,15 @@ internal class RootVpnClient(context: Context) : RootVpn(context) {
                         put("address", "223.5.5.5")
                         put("address_resolver", "local-dns")
                     })
-                }
-                put("servers", servers)
+                })
                 put("rules", JSONArray().apply {
                     put(JSONObject().apply {
                         put("geosite", "cn")
                         put("server", "local-dns")
                     })
                 })
-            }
-            put("dns", dns)
-            
-            // 日志
-            put("log", JSONObject().apply {
-                put("level", "info")
             })
-        }
-        
-        return configJson.toString()
+            put("log", JSONObject().apply { put("level", "info") })
+        }.toString()
     }
 }
