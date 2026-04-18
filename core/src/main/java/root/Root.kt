@@ -102,29 +102,44 @@ class ConfigParams : go.Seq.Proxy {
         return refnum
     }
 
-    // Kotlin properties backed by native methods
-    // Using @JvmName to avoid JVM signature clash with synthetic accessors
-    external var apiKey: String
-        @JvmName("nativeGetApiKey") external get
-        @JvmName("nativeSetApiKey") external set
-    external var clientId: String
-        @JvmName("nativeGetClientId") external get
-        @JvmName("nativeSetClientId") external set
-    external var language: String
-        @JvmName("nativeGetLanguage") external get
-        @JvmName("nativeSetLanguage") external set
-    external var device: DeviceParams
-        @JvmName("nativeGetDevice") external get
-        @JvmName("nativeSetDevice") external set
-    external var appVersion: String
-        @JvmName("nativeGetAppVersion") external get
-        @JvmName("nativeSetAppVersion") external set
-    external var sdkVersion: String
-        @JvmName("nativeGetSdkVersion") external get
-        @JvmName("nativeSetSdkVersion") external set
-    external var timezone: String
-        @JvmName("nativeGetTimezone") external get
-        @JvmName("nativeSetTimezone") external set
+    // Native methods (used by property accessors)
+    @JvmName("nativeGetApiKey") external fun nativeGetApiKey(): String
+    @JvmName("nativeSetApiKey") external fun nativeSetApiKey(v: String)
+    @JvmName("nativeGetClientId") external fun nativeGetClientId(): String
+    @JvmName("nativeSetClientId") external fun nativeSetClientId(v: String)
+    @JvmName("nativeGetLanguage") external fun nativeGetLanguage(): String
+    @JvmName("nativeSetLanguage") external fun nativeSetLanguage(v: String)
+    @JvmName("nativeGetDevice") external fun nativeGetDevice(): DeviceParams
+    @JvmName("nativeSetDevice") external fun nativeSetDevice(v: DeviceParams)
+    @JvmName("nativeGetAppVersion") external fun nativeGetAppVersion(): String
+    @JvmName("nativeSetAppVersion") external fun nativeSetAppVersion(v: String)
+    @JvmName("nativeGetSdkVersion") external fun nativeGetSdkVersion(): String
+    @JvmName("nativeSetSdkVersion") external fun nativeSetSdkVersion(v: String)
+    @JvmName("nativeGetTimezone") external fun nativeGetTimezone(): String
+    @JvmName("nativeSetTimezone") external fun nativeSetTimezone(v: String)
+
+    // Kotlin property wrappers
+    var apiKey: String
+        get() = nativeGetApiKey()
+        set(v) = nativeSetApiKey(v)
+    var clientId: String
+        get() = nativeGetClientId()
+        set(v) = nativeSetClientId(v)
+    var language: String
+        get() = nativeGetLanguage()
+        set(v) = nativeSetLanguage(v)
+    var device: DeviceParams
+        get() = nativeGetDevice()
+        set(v) = nativeSetDevice(v)
+    var appVersion: String
+        get() = nativeGetAppVersion()
+        set(v) = nativeSetAppVersion(v)
+    var sdkVersion: String
+        get() = nativeGetSdkVersion()
+        set(v) = nativeSetSdkVersion(v)
+    var timezone: String
+        get() = nativeGetTimezone()
+        set(v) = nativeSetTimezone(v)
 
     companion object {
         @JvmStatic private external fun __New(): Int
@@ -155,19 +170,29 @@ class DeviceParams : go.Seq.Proxy {
         return refnum
     }
 
-    // Kotlin properties backed by native methods
-    external var os: String
-        @JvmName("nativeGetOs") external get
-        @JvmName("nativeSetOs") external set
-    external var osVersion: String
-        @JvmName("nativeGetOsVersion") external get
-        @JvmName("nativeSetOsVersion") external set
-    external var manufacturer: String
-        @JvmName("nativeGetManufacturer") external get
-        @JvmName("nativeSetManufacturer") external set
-    external var model: String
-        @JvmName("nativeGetModel") external get
-        @JvmName("nativeSetModel") external set
+    // Native methods
+    @JvmName("nativeGetOs") external fun nativeGetOs(): String
+    @JvmName("nativeSetOs") external fun nativeSetOs(v: String)
+    @JvmName("nativeGetOsVersion") external fun nativeGetOsVersion(): String
+    @JvmName("nativeSetOsVersion") external fun nativeSetOsVersion(v: String)
+    @JvmName("nativeGetManufacturer") external fun nativeGetManufacturer(): String
+    @JvmName("nativeSetManufacturer") external fun nativeSetManufacturer(v: String)
+    @JvmName("nativeGetModel") external fun nativeGetModel(): String
+    @JvmName("nativeSetModel") external fun nativeSetModel(v: String)
+
+    // Kotlin property wrappers
+    var os: String
+        get() = nativeGetOs()
+        set(v) = nativeSetOs(v)
+    var osVersion: String
+        get() = nativeGetOsVersion()
+        set(v) = nativeSetOsVersion(v)
+    var manufacturer: String
+        get() = nativeGetManufacturer()
+        set(v) = nativeSetManufacturer(v)
+    var model: String
+        get() = nativeGetModel()
+        set(v) = nativeSetModel(v)
 
     companion object {
         @JvmStatic private external fun __New(): Int
@@ -198,43 +223,69 @@ class FeedbackParams : go.Seq.Proxy {
         return refnum
     }
 
-    // Kotlin properties backed by native methods
-    external var apiKey: String
-        @JvmName("nativeGetApiKey") external get
-        @JvmName("nativeSetApiKey") external set
-    external var clientId: String
-        @JvmName("nativeGetClientId") external get
-        @JvmName("nativeSetClientId") external set
-    external var language: String
-        @JvmName("nativeGetLanguage") external get
-        @JvmName("nativeSetLanguage") external set
-    external var os: String
-        @JvmName("nativeGetOs") external get
-        @JvmName("nativeSetOs") external set
-    external var appVersion: String
-        @JvmName("nativeGetAppVersion") external get
-        @JvmName("nativeSetAppVersion") external set
-    external var utcSent: String
-        @JvmName("nativeGetUtcSent") external get
-        @JvmName("nativeSetUtcSent") external set
-    external var feedbackType: String
-        @JvmName("nativeGetFeedbackType") external get
-        @JvmName("nativeSetFeedbackType") external set
-    external var description: String
-        @JvmName("nativeGetDescription") external get
-        @JvmName("nativeSetDescription") external set
-    external var errorCode: String
-        @JvmName("nativeGetErrorCode") external get
-        @JvmName("nativeSetErrorCode") external set
-    external var errorMessage: String
-        @JvmName("nativeGetErrorMessage") external get
-        @JvmName("nativeSetErrorMessage") external set
-    external var dsHostName: String
-        @JvmName("nativeGetDsHostName") external get
-        @JvmName("nativeSetDsHostName") external set
-    external var email: String
-        @JvmName("nativeGetEmail") external get
-        @JvmName("nativeSetEmail") external set
+    // Native methods
+    @JvmName("nativeGetApiKey") external fun nativeGetApiKey(): String
+    @JvmName("nativeSetApiKey") external fun nativeSetApiKey(v: String)
+    @JvmName("nativeGetClientId") external fun nativeGetClientId(): String
+    @JvmName("nativeSetClientId") external fun nativeSetClientId(v: String)
+    @JvmName("nativeGetLanguage") external fun nativeGetLanguage(): String
+    @JvmName("nativeSetLanguage") external fun nativeSetLanguage(v: String)
+    @JvmName("nativeGetOs") external fun nativeGetOs(): String
+    @JvmName("nativeSetOs") external fun nativeSetOs(v: String)
+    @JvmName("nativeGetAppVersion") external fun nativeGetAppVersion(): String
+    @JvmName("nativeSetAppVersion") external fun nativeSetAppVersion(v: String)
+    @JvmName("nativeGetUtcSent") external fun nativeGetUtcSent(): String
+    @JvmName("nativeSetUtcSent") external fun nativeSetUtcSent(v: String)
+    @JvmName("nativeGetFeedbackType") external fun nativeGetFeedbackType(): String
+    @JvmName("nativeSetFeedbackType") external fun nativeSetFeedbackType(v: String)
+    @JvmName("nativeGetDescription") external fun nativeGetDescription(): String
+    @JvmName("nativeSetDescription") external fun nativeSetDescription(v: String)
+    @JvmName("nativeGetErrorCode") external fun nativeGetErrorCode(): String
+    @JvmName("nativeSetErrorCode") external fun nativeSetErrorCode(v: String)
+    @JvmName("nativeGetErrorMessage") external fun nativeGetErrorMessage(): String
+    @JvmName("nativeSetErrorMessage") external fun nativeSetErrorMessage(v: String)
+    @JvmName("nativeGetDsHostName") external fun nativeGetDsHostName(): String
+    @JvmName("nativeSetDsHostName") external fun nativeSetDsHostName(v: String)
+    @JvmName("nativeGetEmail") external fun nativeGetEmail(): String
+    @JvmName("nativeSetEmail") external fun nativeSetEmail(v: String)
+
+    // Kotlin property wrappers
+    var apiKey: String
+        get() = nativeGetApiKey()
+        set(v) = nativeSetApiKey(v)
+    var clientId: String
+        get() = nativeGetClientId()
+        set(v) = nativeSetClientId(v)
+    var language: String
+        get() = nativeGetLanguage()
+        set(v) = nativeSetLanguage(v)
+    var os: String
+        get() = nativeGetOs()
+        set(v) = nativeSetOs(v)
+    var appVersion: String
+        get() = nativeGetAppVersion()
+        set(v) = nativeSetAppVersion(v)
+    var utcSent: String
+        get() = nativeGetUtcSent()
+        set(v) = nativeSetUtcSent(v)
+    var feedbackType: String
+        get() = nativeGetFeedbackType()
+        set(v) = nativeSetFeedbackType(v)
+    var description: String
+        get() = nativeGetDescription()
+        set(v) = nativeSetDescription(v)
+    var errorCode: String
+        get() = nativeGetErrorCode()
+        set(v) = nativeSetErrorCode(v)
+    var errorMessage: String
+        get() = nativeGetErrorMessage()
+        set(v) = nativeSetErrorMessage(v)
+    var dsHostName: String
+        get() = nativeGetDsHostName()
+        set(v) = nativeSetDsHostName(v)
+    var email: String
+        get() = nativeGetEmail()
+        set(v) = nativeSetEmail(v)
 
     companion object {
         @JvmStatic private external fun __New(): Int
@@ -265,13 +316,19 @@ class ReportParams : go.Seq.Proxy {
         return refnum
     }
 
-    // Kotlin properties backed by native methods
-    external var apiKey: String
-        @JvmName("nativeGetApiKey") external get
-        @JvmName("nativeSetApiKey") external set
-    external var clientId: String
-        @JvmName("nativeGetClientId") external get
-        @JvmName("nativeSetClientId") external set
+    // Native methods
+    @JvmName("nativeGetApiKey") external fun nativeGetApiKey(): String
+    @JvmName("nativeSetApiKey") external fun nativeSetApiKey(v: String)
+    @JvmName("nativeGetClientId") external fun nativeGetClientId(): String
+    @JvmName("nativeSetClientId") external fun nativeSetClientId(v: String)
+
+    // Kotlin property wrappers
+    var apiKey: String
+        get() = nativeGetApiKey()
+        set(v) = nativeSetApiKey(v)
+    var clientId: String
+        get() = nativeGetClientId()
+        set(v) = nativeSetClientId(v)
 
     companion object {
         @JvmStatic private external fun __New(): Int
