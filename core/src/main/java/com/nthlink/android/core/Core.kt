@@ -2,6 +2,7 @@ package com.nthlink.android.core
 
 import com.nthlink.android.core.utils.EMPTY
 import root.ConfigParams
+import root.DeviceParams
 import root.Root
 
 object Core {
@@ -39,11 +40,18 @@ object Core {
     ): String {
         init()
         
+        val deviceParams = DeviceParams().apply {
+            this.os = "Android"
+            this.osVersion = android.os.Build.VERSION.RELEASE
+            this.manufacturer = android.os.Build.MANUFACTURER
+            this.model = device
+        }
+        
         val params = ConfigParams().apply {
             this.apiKey = API_KEY
             this.clientId = clientId
             this.language = language
-            this.device = device
+            this.device = deviceParams
             this.appVersion = appVersion
             this.sdkVersion = sdkVersion
             this.timezone = timezone
