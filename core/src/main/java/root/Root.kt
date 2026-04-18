@@ -102,6 +102,7 @@ class ConfigParams : go.Seq.Proxy {
         return refnum
     }
 
+    // Native methods
     external fun getApiKey(): String
     external fun setApiKey(v: String)
     external fun getClientId(): String
@@ -116,6 +117,29 @@ class ConfigParams : go.Seq.Proxy {
     external fun setSdkVersion(v: String)
     external fun getTimezone(): String
     external fun setTimezone(v: String)
+
+    // Kotlin property wrappers for convenient access
+    var apiKey: String
+        get() = getApiKey()
+        set(v) = setApiKey(v)
+    var clientId: String
+        get() = getClientId()
+        set(v) = setClientId(v)
+    var language: String
+        get() = getLanguage()
+        set(v) = setLanguage(v)
+    var device: DeviceParams
+        get() = getDevice()
+        set(v) = setDevice(v)
+    var appVersion: String
+        get() = getAppVersion()
+        set(v) = setAppVersion(v)
+    var sdkVersion: String
+        get() = getSdkVersion()
+        set(v) = setSdkVersion(v)
+    var timezone: String
+        get() = getTimezone()
+        set(v) = setTimezone(v)
 
     companion object {
         @JvmStatic private external fun __New(): Int
@@ -146,6 +170,7 @@ class DeviceParams : go.Seq.Proxy {
         return refnum
     }
 
+    // Native methods
     external fun getOs(): String
     external fun setOs(v: String)
     external fun getOsVersion(): String
@@ -154,6 +179,20 @@ class DeviceParams : go.Seq.Proxy {
     external fun setManufacturer(v: String)
     external fun getModel(): String
     external fun setModel(v: String)
+
+    // Kotlin property wrappers
+    var os: String
+        get() = getOs()
+        set(v) = setOs(v)
+    var osVersion: String
+        get() = getOsVersion()
+        set(v) = setOsVersion(v)
+    var manufacturer: String
+        get() = getManufacturer()
+        set(v) = setManufacturer(v)
+    var model: String
+        get() = getModel()
+        set(v) = setModel(v)
 
     companion object {
         @JvmStatic private external fun __New(): Int
@@ -184,6 +223,7 @@ class FeedbackParams : go.Seq.Proxy {
         return refnum
     }
 
+    // Native methods
     external fun getApiKey(): String
     external fun setApiKey(v: String)
     external fun getClientId(): String
@@ -208,6 +248,44 @@ class FeedbackParams : go.Seq.Proxy {
     external fun setDsHostName(v: String)
     external fun getEmail(): String
     external fun setEmail(v: String)
+
+    // Kotlin property wrappers
+    var apiKey: String
+        get() = getApiKey()
+        set(v) = setApiKey(v)
+    var clientId: String
+        get() = getClientId()
+        set(v) = setClientId(v)
+    var language: String
+        get() = getLanguage()
+        set(v) = setLanguage(v)
+    var os: String
+        get() = getOs()
+        set(v) = setOs(v)
+    var appVersion: String
+        get() = getAppVersion()
+        set(v) = setAppVersion(v)
+    var utcSent: String
+        get() = getUtcSent()
+        set(v) = setUtcSent(v)
+    var feedbackType: String
+        get() = getFeedbackType()
+        set(v) = setFeedbackType(v)
+    var description: String
+        get() = getDescription()
+        set(v) = setDescription(v)
+    var errorCode: String
+        get() = getErrorCode()
+        set(v) = setErrorCode(v)
+    var errorMessage: String
+        get() = getErrorMessage()
+        set(v) = setErrorMessage(v)
+    var dsHostName: String
+        get() = getDsHostName()
+        set(v) = setDsHostName(v)
+    var email: String
+        get() = getEmail()
+        set(v) = setEmail(v)
 
     companion object {
         @JvmStatic private external fun __New(): Int
@@ -238,10 +316,19 @@ class ReportParams : go.Seq.Proxy {
         return refnum
     }
 
+    // Native methods
     external fun getApiKey(): String
     external fun setApiKey(v: String)
     external fun getClientId(): String
     external fun setClientId(v: String)
+
+    // Kotlin property wrappers
+    var apiKey: String
+        get() = getApiKey()
+        set(v) = setApiKey(v)
+    var clientId: String
+        get() = getClientId()
+        set(v) = setClientId(v)
 
     companion object {
         @JvmStatic private external fun __New(): Int
